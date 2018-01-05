@@ -24,6 +24,8 @@ public class UserTest extends BaseManagerSpringTest {
     public void queryUserList() {
         UserParam param = new UserParam();
         param.setUsercode("1");
+        param.setPageCurrent(1);
+        param.setPageSize(10);
         Response<List<UserResult>> actual = coreUserInfoService.queryUserList(param);
 
         if (!actual.isSuccess()) {

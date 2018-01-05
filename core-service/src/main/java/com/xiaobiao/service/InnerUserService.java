@@ -1,5 +1,7 @@
 package com.xiaobiao.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.xiaobiao.enummoel.CoreErrorEnum;
 import com.xiaobiao.exception.CoreException;
 import com.xiaobiao.mapper.UserMapper;
@@ -31,11 +33,15 @@ public class InnerUserService {
     public List<UserResult> queryUserList(UserParam userParam) {
         User user = new User();
         BeanMapper.copy(userParam, user);
+        PageHelper.startPage(user.getPageCurrent(), user.getPageSize());
         List<User> list = userMapper.selectUserList(user);
         if ((ObjectUtils.isNullOrEmpty(list)) && userParam.getIsNullError()){
             throw new CoreException(CoreErrorEnum.ERROR_CODE_341001.getErrorCode(),
                     CoreErrorEnum.ERROR_CODE_341001.getErrorDesc());
         }
+        // 取分页信息
+        PageInfo<User> pageInfo = new PageInfo<User>(list);
+        long total = pageInfo.getTotal(); //获取总记录数
         return BeanMapper.mapList(list, UserResult.class);
     }
 
